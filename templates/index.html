@@ -38,5 +38,42 @@
 
         <button type="submit">Add Expense</button>
     </form>
+<hr>
+    <h2>All Expenses</h2>
+    <h3>Total Spent: ₹{{ total }}</h3>
+
+    <table border="1" width="100%" cellpadding="10" style="border-collapse: collapse; text-align: left;">
+        <tr>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        {% for exp in expenses %}
+        <tr>
+            <td>{{ exp['category'] }}</td>
+            <td>{{ exp['description'] }}</td>
+            <td>₹{{ exp['amount'] }}</td>
+            <td>{{ exp['date'] }}</td>
+            <td>
+                {% if exp['paid'] == 1 %}
+                    <span style="color: green;">Paid ✓</span>
+                {% else %}
+                    <span style="color: red;">Unpaid</span>
+                {% endif %}
+            </td>
+            <td>
+                <!-- Placeholder for the next stage -->
+                {% if exp['paid'] == 0 %}
+                    <a href="/paid/{{ exp['id'] }}"><button>Mark Paid</button></a>
+                {% endif %}
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6">No expenses found.</td></tr>
+        {% endfor %}
+    </table>
 </body>
 </html>

@@ -32,9 +32,18 @@ init_db()
 
 @app.route('/')
 def index():
-    # For now, just render the form. We'll add the list in the next stage.
     error = request.args.get('error')
-    return render_template('index.html', error=error)
+    conn = get_db_connection()
+
+    # Fetch all expenses
+    expenses = conn.execute('SELECT * FROM expenses ORDER BY date DESC').fetchall()
+
+    # Calculate total (handling the edge case where there are no expenses yet)
+    total_row = conn.execute('SELECT SUM(amount) as total FROM expenses').fetchone()
+    total = total_row['total'] if total_row['total'] else 0.0
+
+    conn.close()
+    return render_template('index.html', expenses=expenses, total=total, error=error)
 
 @app.route('/add', methods=['POST'])
 def add_expense():
