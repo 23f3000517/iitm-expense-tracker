@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Expense Tracker</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 20px auto; }
+        .error { color: red; }
+        form { margin-bottom: 30px; padding: 15px; background: #f4f4f4; border-radius: 5px; }
+        input, select, button { margin: 5px 0; padding: 8px; width: 100%; box-sizing: border-box; }
+    </style>
+</head>
+<body>
+    <h2>Add New Expense</h2>
+
+    <!-- Display errors if validation fails -->
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form action="/add" method="POST">
+        <label>Category:</label>
+        <select name="category" required>
+            <option value="">Select a category</option>
+            <option value="Food">Food</option>
+            <option value="Travel">Travel</option>
+            <option value="Shopping">Shopping</option>
+            <option value="Bills">Bills</option>
+        </select>
+
+        <label>Description:</label>
+        <input type="text" name="description" required>
+
+        <label>Amount (₹):</label>
+        <input type="number" step="0.01" name="amount" required>
+
+        <label>Date:</label>
+        <input type="date" name="date" required>
+
+        <button type="submit">Add Expense</button>
+    </form>
+</body>
+</html>

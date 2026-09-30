@@ -28,9 +28,42 @@ def init_db():
 # Run initialization when the app starts
 init_db()
 
+# ... (keep your existing imports and init_db function) ...
+
 @app.route('/')
 def index():
-    return "Expense Tracker Database Initialized!"
+    # For now, just render the form. We'll add the list in the next stage.
+    error = request.args.get('error')
+    return render_template('index.html', error=error)
+
+@app.route('/add', methods=['POST'])
+def add_expense():
+    category = request.form.get('category')
+    description = request.form.get('description')
+    amount = request.form.get('amount')
+    date = request.form.get('date')
+
+    # Basic Edge Case Validation
+    if not category or not description or not date:
+        return redirect(url_for('index', error="All fields are required."))
+
+    try:
+        amount = float(amount)
+        if amount <= 0:
+            return redirect(url_for('index', error="Amount must be greater than 0."))
+    except ValueError:
+        return redirect(url_for('index', error="Invalid amount format."))
+
+    # Save to SQLite
+    conn = get_db_connection()
+    conn.execute(
+        'INSERT INTO expenses (category, description, amount, date) VALUES (?, ?, ?, ?)',
+        (category, description, amount, date)
+    )
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(debug=True)
