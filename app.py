@@ -74,5 +74,26 @@ def add_expense():
 
     return redirect(url_for('index'))
 
+@app.route('/paid/<int:id>')
+def mark_paid(id):
+    conn = get_db_connection()
+    # Toggle the paid status
+    conn.execute('UPDATE expenses SET paid = 1 WHERE id = ?', (id,))
+    conn.commit()
+    conn.close()
+    # Return the user to the previous page they were on
+    return redirect(request.referrer or url_for('index'))
+
+@app.route('/category/<category_name>')
+def view_category(category_name):
+    conn = get_db_connection()
+    expenses = conn.execute('SELECT * FROM expenses WHERE category = ? ORDER BY date DESC', (category_name,)).fetchall()
+
+    total_row = conn.execute('SELECT SUM(amount) as total FROM expenses WHERE category = ?', (category_name,)).fetchone()
+    total = total_row['total'] if total_row['total'] else 0.0
+
+    conn.close()
+    return render_template('index.html', expenses=expenses, total=total, current_category=category_name)
+
 if __name__ == '__main__':
     app.run(debug=True)

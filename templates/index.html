@@ -39,6 +39,16 @@
         <button type="submit">Add Expense</button>
     </form>
 <hr>
+<div style="margin-bottom: 20px;">
+        <strong>Filter:</strong> 
+        <a href="/">All</a> | 
+        <a href="/category/Food">Food</a> | 
+        <a href="/category/Travel">Travel</a> | 
+        <a href="/category/Shopping">Shopping</a> | 
+        <a href="/category/Bills">Bills</a>
+    </div>
+
+    <h2>{% if current_category %}{{ current_category }} Expenses{% else %}All Expenses{% endif %}</h2>
     <h2>All Expenses</h2>
     <h3>Total Spent: ₹{{ total }}</h3>
 
